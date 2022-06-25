@@ -1,0 +1,79 @@
+version: "3.9"
+
+services:
+  respira-confianza-db:
+    container_name: respira-confianza-db
+    build: ../respira-confianza-db
+    restart: always
+    env_file:
+      - ../respira-confianza-db/.env
+    environment:
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    ports:
+      - "15432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+
+  respira-confianza-pgadmin:
+    container_name: respira-confianza-pgadmin
+    build: ../respira-confianza-pgadmin
+    env_file:
+      - ../respira-confianza-pgadmin/.env
+    depends_on:
+      - respira-confianza-db
+    ports:
+      - "82:82"
+
+  respira-confianza-api:
+    container_name: respira-confianza-api
+    build: ../respira-confianza-api
+    restart: always
+    env_file:
+      - ../respira-confianza-api/.env.docker
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./respira-confianza-api:/usr/src/app
+    depends_on:
+      - respira-confianza-db
+    links:
+      - respira-confianza-db
+    expose:
+      - 8080
+
+  respira-confianza-web:
+    container_name: respira-confianza-web
+    build: ../respira-confianza-web
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./respira-confianza-web:/usr/src/app
+    env_file:
+      - ../respira-confianza-web/.env.docker
+    environment:
+      NODE_OPTIONS: "--openssl-legacy-provider"
+    depends_on:
+      - respira-confianza-api
+    links:
+      - respira-confianza-api
+    expose:
+      - 3000
+
+  respira-confianza-nginx:
+    container_name: respira-confianza-reverse-proxy
+    build: ../respira-confianza-reverse-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - respira-confianza-web
+      - respira-confianza-pgadmin
+    links:
+      - respira-confianza-db
+      - respira-confianza-api
+      - respira-confianza-web
+
+volumes:
+  pgdata:
