@@ -41,6 +41,17 @@ services:
     expose:
       - 8080
 
+  respira-confianza-mqtt:
+    container_name: respira-confianza-mqtt
+    build: ../respira-confianza-mqtt
+    restart: always
+    env_file:
+      - ../respira-confianza-mqtt/.env.docker
+    depends_on:
+      - respira-confianza-api
+    links:
+      - respira-confianza-api
+
   respira-confianza-web:
     container_name: respira-confianza-web
     build: ../respira-confianza-web
