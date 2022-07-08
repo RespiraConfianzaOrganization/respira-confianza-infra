@@ -62,8 +62,6 @@ services:
       - ./respira-confianza-web:/usr/src/app
     env_file:
       - ../respira-confianza-web/.env.docker
-    environment:
-      NODE_OPTIONS: "--openssl-legacy-provider"
     depends_on:
       - respira-confianza-api
     links:
