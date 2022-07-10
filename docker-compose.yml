@@ -21,8 +21,8 @@ services:
       - ../respira-confianza-pgadmin/.env
     depends_on:
       - respira-confianza-db
-    ports:
-      - "82:82"
+    expose:
+      - 82
 
   respira-confianza-api:
     container_name: respira-confianza-api
