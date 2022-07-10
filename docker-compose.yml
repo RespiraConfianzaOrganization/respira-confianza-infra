@@ -30,8 +30,6 @@ services:
     restart: always
     env_file:
       - ../respira-confianza-api/.env.docker
-    ports:
-      - "8080:8080"
     volumes:
       - ./respira-confianza-api:/usr/src/app
     depends_on:
@@ -56,8 +54,6 @@ services:
     container_name: respira-confianza-web
     build: ../respira-confianza-web
     restart: always
-    ports:
-      - "3000:3000"
     volumes:
       - ./respira-confianza-web:/usr/src/app
     env_file:
