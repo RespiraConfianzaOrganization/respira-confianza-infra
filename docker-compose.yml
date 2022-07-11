@@ -76,9 +76,21 @@ services:
       - respira-confianza-web
       - respira-confianza-pgadmin
     links:
-      - respira-confianza-db
       - respira-confianza-api
       - respira-confianza-web
+      - respira-confianza-pgadmin
+    volumes:
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+
+  respira-confianza-certbot:
+    container_name: respira-confianza-certbot
+    build: ../respira-confianza-certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt:rw
+      - ./data/certbot/www:/var/www/certbot:rw
+
 
 volumes:
   pgdata:
